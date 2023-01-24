@@ -1,9 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import ReactDOM from 'react-dom';
 import axios from 'axios';
-const { ipcRenderer, remote } = require('electron-renderer');
+//const { ipcRenderer, remote } = require('electron-renderer');
 import './styles.css';
-
 
 function App() {
   const baseURL = 'https://api.0xnim.xyz';
@@ -14,6 +13,30 @@ function App() {
   const [selectedMod, setSelectedMod] = React.useState(null);
   const [selectedVersion, setSelectedVersion] = React.useState(null);
 
+  const [modType, setModType] = useState('mod');
+
+  const handleModTypeChange = (type) => {
+    setModType(type);
+  }
+
+  // Fetch data from the API
+  const fetchData = async () => {
+    const response = await axios.get('http://localhost:3001/api/mods');
+    setMods(response.data.data);
+  };
+
+  // Handle mod type toggle
+  const handleModTypeToggle = (e) => {
+    setModType(e.target.value);
+    console.log('test5');
+  };
+
+  // Render the list of mods
+  const renderMods = () => {
+    return mods
+      .filter((mod) => mod.type === modType)
+      .map((mod) => <div key={mod.id}>{mod.name}</div>);
+  };
   
   React.useEffect(() => {
     fetch('https://api.0xnim.xyz/api/mods/')
@@ -98,14 +121,19 @@ function App() {
       const versions = await getModVersions(identifier);
       const largestVersion = findLargestVersion(versions);
       const selectedVersion = await getVersionByIdentifier(largestVersion, identifier);
-      downloadPromises.push(ipcRenderer.invoke('download-item', selectedVersion.download, selectedVersion.hash));
-      await Promise.all(downloadPromises);
+      //downloadPromises.push(ipcRenderer.invoke('download-item', selectedVersion.download, selectedVersion.hash));
+      //await Promise.all(downloadPromises);
       console.log(selectedVersion.download, selectedVersion.hash);
     } 
   };
 
   return (
     <div>
+      <nav>
+        <button value="mod" onClick={handleModTypeToggle}>Mods</button>
+        <button value="pack" onClick={handleModTypeToggle}>Packs</button>
+        <button value="texture" onClick={handleModTypeToggle}>Textures</button>
+      </nav>
       <table>
         <thead>
           <tr>
