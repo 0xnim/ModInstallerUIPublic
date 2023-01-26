@@ -1,7 +1,7 @@
 {
   "name": "modinstalleruijs",
   "productName": "SFS ModInstaller",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "main": "main.js",
   "homepage": ".",
   "scripts": {
@@ -36,6 +36,7 @@
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.7.0",
     "react-scripts": "^5.0.1",
+    "solid-toast": "^0.4.0",
     "stream": "^0.0.2",
     "stream-browserify": "^3.0.0"
   },

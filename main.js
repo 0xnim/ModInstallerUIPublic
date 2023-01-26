@@ -3,19 +3,19 @@ const { download } = require('electron-dl');
 
 let mainWindow;
 
-ipcMain.handle('download-item', async (event, url, hash) => {
-   downloadUrl(url, hash);
+ipcMain.handle('download-item', async (event, url, hash, type) => {
+   downloadUrl(url, hash, type);
 });
 
 let downloadQueue = [];
 let isDownloading = false;
 
-const downloadUrl = (url, hash) => {
+const downloadUrl = (url, hash, type) => {
     downloadQueue.push({ url, hash });
-    processQueue();
+    processQueue(type);
 }
 
-let folder = 'C://Program Files (x86)//Steam//steamapps//common//Spaceflight Simulator//Spaceflight Simulator Game//Mods';
+let folder = 'C://Program Files (x86)//Steam//steamapps//common//Spaceflight Simulator//Spaceflight Simulator Game';
 
 const selectFolder = () => {
    dialog.showOpenDialog(mainWindow, {
@@ -24,21 +24,39 @@ const selectFolder = () => {
       console.log(result.canceled)
       arrayPath = result.filePaths;
       folder = arrayPath.toString();
-      console.log(folder);
+      updateDownloadPaths();
     }).catch(err => {
       console.log(err)
     })
 };
 
-const processQueue = async () => {
+const updateDownloadPaths = () => {
+   downloadPaths = {
+      "mod": folder.replace(/\//g, '\\') + '\\Mods',
+      "pack": folder.replace(/\//g, '\\') + '\\Mods\\Parts',
+      "texture": folder.replace(/\//g, '\\') + '\\Mods\\Textutre Packs'
+   }
+}
+
+let downloadPaths = {
+   "mod": folder.replace(/\//g, '\\') + '\\Mods',
+   "pack": folder.replace(/\//g, '\\') + '\\Mods\\Custom Assets\\Parts',
+   "texture": folder.replace(/\//g, '\\') + '\\Mods\\Custom Assets\\Textutre Packs'
+}
+
+
+const processQueue = async (type) => {
    if (!isDownloading && downloadQueue.length > 0) {
+       const downloadPath = downloadPaths[type];
+       console.log(downloadPath)
        isDownloading = true;
        const { url, hash } = downloadQueue.shift();
        const fileName = url.split('/').pop();
        try{
+           console.log('check1');
            await download(mainWindow, url, {
                filename: fileName,
-               directory: folder, 
+               directory: downloadPath, 
            });
        } catch (error) {
            console.log(error)

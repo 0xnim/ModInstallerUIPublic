@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import ReactDOM from 'react-dom';
 import axios from 'axios';
-//const { ipcRenderer, remote } = require('electron-renderer');
+const { ipcRenderer, remote } = require('electron-renderer');
 import './styles.css';
+import toast, { Toaster } from 'solid-toast';
 
 function App() {
   const baseURL = 'https://api.0xnim.xyz';
@@ -12,34 +13,10 @@ function App() {
   const [installCheckboxes, setInstallCheckboxes] = React.useState({});
   const [selectedMod, setSelectedMod] = React.useState(null);
   const [selectedVersion, setSelectedVersion] = React.useState(null);
-
   const [modType, setModType] = useState('mod');
-
-  const handleModTypeChange = (type) => {
-    setModType(type);
-  }
-
-  // Fetch data from the API
-  const fetchData = async () => {
-    const response = await axios.get('http://localhost:3001/api/mods');
-    setMods(response.data.data);
-  };
-
-  // Handle mod type toggle
-  const handleModTypeToggle = (e) => {
-    setModType(e.target.value);
-    console.log('test5');
-  };
-
-  // Render the list of mods
-  const renderMods = () => {
-    return mods
-      .filter((mod) => mod.type === modType)
-      .map((mod) => <div key={mod.id}>{mod.name}</div>);
-  };
   
   React.useEffect(() => {
-    fetch('https://api.0xnim.xyz/api/mods/')
+    fetch(`https://api.0xnim.xyz/api/mods`)
       .then(response => response.json())
       .then(data => setMods(data.data));
   }, []);
@@ -113,6 +90,7 @@ function App() {
   
 
   const handleApply = async () => {
+    toast.success('Toast launched successfully!');
     const selectedMods = Object.keys(installCheckboxes).filter(id => installCheckboxes[id]);
     const downloadPromises = [];
     for (const id of selectedMods) {
@@ -121,8 +99,8 @@ function App() {
       const versions = await getModVersions(identifier);
       const largestVersion = findLargestVersion(versions);
       const selectedVersion = await getVersionByIdentifier(largestVersion, identifier);
-      //downloadPromises.push(ipcRenderer.invoke('download-item', selectedVersion.download, selectedVersion.hash));
-      //await Promise.all(downloadPromises);
+      downloadPromises.push(ipcRenderer.invoke('download-item', selectedVersion.download, selectedVersion.hash, selectedVersion.type));
+      await Promise.all(downloadPromises);
       console.log(selectedVersion.download, selectedVersion.hash);
     } 
   };
@@ -130,10 +108,16 @@ function App() {
   return (
     <div>
       <nav>
-        <button value="mod" onClick={handleModTypeToggle}>Mods</button>
-        <button value="pack" onClick={handleModTypeToggle}>Packs</button>
-        <button value="texture" onClick={handleModTypeToggle}>Textures</button>
+        <button value="mod" onClick={() => setModType("mod")}>Mods</button>
+        <button value="pack" onClick={() => setModType("pack")}>Packs</button>
+        <button value="texture" onClick={() => setModType("texture")}>Textures</button>
       </nav>
+      <div>
+        {/* Render the appropriate content based on the mod type */}
+        {modType === 'mod' && <p />}
+        {modType === 'pack' && <p />}
+        {modType === 'texture' && <p />}
+      </div>
       <table>
         <thead>
           <tr>
@@ -143,29 +127,36 @@ function App() {
           </tr>
         </thead>
         <tbody>
-          {mods.map( mod => (
-            <tr key={mod.id} onClick={() => handleRowClick(mod)}>
-              <td>
-              <input
-                  type="checkbox"
-                  className="checkbox"
-                  onChange={e => handleCheckboxChange(e, mod.id)}
-                  checked={installCheckboxes[mod.id] || false}
-                />
-              </td>
-              <td>{mod.name}</td>
-              <td>{mod.author}</td>
-            </tr>
-          ))}
+        {mods.map( mod => {
+          if (mod.type === modType) {
+            return (
+              <tr key={mod.id} onClick={() => handleRowClick(mod)}>
+                <td>
+                  <input
+                    type="checkbox"
+                    className="checkbox"
+                    onChange={e => handleCheckboxChange(e, mod.id)}
+                    checked={installCheckboxes[mod.id] || false}
+                  />
+                </td>
+                <td>{mod.name}</td>
+                <td>{mod.author}</td>
+              </tr>
+            )
+          }
+          return null;
+        })}
         </tbody>
       </table>
       {selectedMod && (
         <div className="side-window">
           <h2>{selectedMod.name}</h2>
+          <p>{selectedMod.type === 'mod' ? 'Mod' : 'Pack'}</p>
           <span>{selectedMod.status === 1 ? 'Maintained: ' : 'Not Maintained: '}</span>
           <div className={`checkmark ${selectedMod.status === 1 ? 'maintained' : 'not-maintained'}`} />
-          <p>Author: {selectedMod.author}</p>
+          <p>{selectedMod.type === 'mod' ? 'Mod' : 'Pack'}</p>
           <p>Description: {selectedMod.description}</p>
+          
         </div>
       )}
       <button onClick={() => handleApply()} class="apply-btn">Apply</button>
@@ -173,4 +164,4 @@ function App() {
   );
 }
 
-ReactDOM.render(<App />, document.getElementById('root'));
+ReactDOM.render(<App/>, document.getElementById('root'));
