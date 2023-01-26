@@ -160,7 +160,9 @@ function App() {
           
         </div>
       )}
-      <button onClick={() => handleApply()} class="apply-btn">Apply</button>
+      <div class="center">
+        <button onClick={() => handleApply()} class="apply-btn">Apply</button>
+      </div>
     </div>
   );
 }
