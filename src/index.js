@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import axios from 'axios';
 const { ipcRenderer, remote } = require('electron-renderer');
 import './styles.css';
+import 'https://cdn.jsdelivr.net/npm/water.css@2/out/water.css';
 import toast, { Toaster } from 'solid-toast';
 
 function App() {
