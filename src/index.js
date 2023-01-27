@@ -3,7 +3,6 @@ import ReactDOM from 'react-dom';
 import axios from 'axios';
 const { ipcRenderer, remote } = require('electron-renderer');
 import './styles.css';
-import 'https://cdn.jsdelivr.net/npm/water.css@2/out/water.css';
 import toast, { Toaster } from 'solid-toast';
 
 function App() {
@@ -119,7 +118,7 @@ function App() {
         {modType === 'pack' && <p />}
         {modType === 'texture' && <p />}
       </div>
-      <table>
+      <table class="half">
         <thead>
           <tr>
             <th>Install</th>
@@ -153,8 +152,7 @@ function App() {
         <div className="side-window">
           <h2>{selectedMod.name}</h2>
           <p>{selectedMod.type === 'mod' ? 'Mod' : 'Pack'}</p>
-          <span>{selectedMod.status === 1 ? 'Maintained: ' : 'Not Maintained: '}</span>
-          <div className={`checkmark ${selectedMod.status === 1 ? 'maintained' : 'not-maintained'}`} />
+          <p class="checkmark">{selectedMod.status === 1 ? 'Maintained: ' : 'Not Maintained: '}</p>
           <p>{selectedMod.type === 'mod' ? 'Mod' : 'Pack'}</p>
           <p>Description: {selectedMod.description}</p>
           
