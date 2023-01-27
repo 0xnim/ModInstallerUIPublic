@@ -19,7 +19,7 @@ const downloadUrl = (url, hash, type) => {
     processQueue(type);
 }
 
-let folder = 'C://Program Files (x86)//Steam//steamapps//common//Spaceflight Simulator//Spaceflight Simulator Game';
+let folder = 'C://Program Files (x86)//Steam//steamapps//common';
 
 const selectFolder = () => {
    dialog.showOpenDialog(mainWindow, {
@@ -36,9 +36,9 @@ const selectFolder = () => {
 
 const updateDownloadPaths = () => {
    downloadPaths = {
-      "mod": folder.replace(/\//g, '\\') + '\\Mods',
-      "pack": folder.replace(/\//g, '\\') + '\\Mods\\Parts',
-      "texture": folder.replace(/\//g, '\\') + '\\Mods\\Textutre Packs'
+      "mod": folder.replace(/\//g, '\\') + '\\Spaceflight Simulator//Spaceflight Simulator Game\\Mods',
+      "pack": folder.replace(/\//g, '\\') + '\\Spaceflight Simulator//Spaceflight Simulator Game\\Mods\\Parts',
+      "texture": folder.replace(/\//g, '\\') + '\\Spaceflight Simulator//Spaceflight Simulator Game\\Mods\\Textutre Packs'
    }
 }
 
