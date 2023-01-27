@@ -1,8 +1,12 @@
 const { app, BrowserWindow, Menu, ipcMain, dialog } = require('electron');
 const { download } = require('electron-dl');
 const { autoUpdater } = require('electron-updater');
+const Store = require('electron-store');
+
 
 let mainWindow;
+
+const store = new Store();
 
 autoUpdater.checkForUpdates();
 
@@ -19,7 +23,7 @@ const downloadUrl = (url, hash, type) => {
     processQueue(type);
 }
 
-let folder = 'C://Program Files (x86)//Steam//steamapps//common//Spaceflight Simulator//Spaceflight Simulator Game';
+let folder = 'C://Program Files (x86)//Steam//steamapps//common';
 
 const selectFolder = () => {
    dialog.showOpenDialog(mainWindow, {
@@ -27,8 +31,13 @@ const selectFolder = () => {
     }).then(result => {
       console.log(result.canceled)
       arrayPath = result.filePaths;
-      folder = arrayPath.toString();
-      updateDownloadPaths();
+      if (arrayPath.toString().indexOf("steamapps") >= 0) {
+         folder = arrayPath.toString();
+         updateDownloadPaths();
+      }
+      else {
+         console.log("Error Occurred.")
+      }
     }).catch(err => {
       console.log(err)
     })
@@ -36,16 +45,16 @@ const selectFolder = () => {
 
 const updateDownloadPaths = () => {
    downloadPaths = {
-      "mod": folder.replace(/\//g, '\\') + '\\Mods',
-      "pack": folder.replace(/\//g, '\\') + '\\Mods\\Parts',
-      "texture": folder.replace(/\//g, '\\') + '\\Mods\\Textutre Packs'
+      "mod": folder.replace(/\//g, '\\') + '\\Spaceflight Simulator\\Spaceflight Simulator Game\\Mods',
+      "pack": folder.replace(/\//g, '\\') + '\\Spaceflight Simulator\\Spaceflight Simulator Game\\Mods\\Parts',
+      "texture": folder.replace(/\//g, '\\') + '\\Spaceflight Simulator\\Spaceflight Simulator Game\\Mods\\Textutre Packs'
    }
 }
 
 let downloadPaths = {
-   "mod": folder.replace(/\//g, '\\') + '\\Mods',
-   "pack": folder.replace(/\//g, '\\') + '\\Mods\\Custom Assets\\Parts',
-   "texture": folder.replace(/\//g, '\\') + '\\Mods\\Custom Assets\\Textutre Packs'
+   "mod": folder.replace(/\//g, '\\') + '\\Spaceflight Simulator\\Spaceflight Simulator Game\\Mods',
+   "pack": folder.replace(/\//g, '\\') + '\\Spaceflight Simulator\\Spaceflight Simulator Game\\Mods\\Custom Assets\\Parts',
+   "texture": folder.replace(/\//g, '\\') + '\\Spaceflight Simulator\\Spaceflight Simulator Game\\Mods\\Custom Assets\\Textutre Packs'
 }
 
 

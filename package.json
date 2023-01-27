@@ -1,7 +1,7 @@
 {
   "name": "modinstalleruijs",
   "productName": "SFS ModInstaller",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "main": "main.js",
   "homepage": ".",
   "scripts": {
@@ -25,6 +25,7 @@
     "crypto-browserify": "^3.12.0",
     "electron-dl": "^3.5.0",
     "electron-renderer": "^2.0.4",
+    "electron-store": "^8.1.0",
     "electron-updater": "^5.3.0",
     "install": "^0.13.0",
     "js-md5": "^0.7.3",
