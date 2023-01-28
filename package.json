@@ -1,7 +1,7 @@
 {
   "name": "modinstalleruijs",
   "productName": "SFS ModInstaller",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "main": "public/electron.js",
   "homepage": ".",
   "scripts": {
@@ -24,6 +24,7 @@
     "crypto": "^1.0.1",
     "crypto-browserify": "^3.12.0",
     "electron-dl": "^3.5.0",
+    "electron-log": "^4.4.8",
     "electron-renderer": "^2.0.4",
     "electron-store": "^8.1.0",
     "electron-updater": "^5.3.0",
@@ -72,7 +73,9 @@
     ],
     "win": {
       "target": "nsis",
-      "icon": "src/png.ico"
+      "icon": "src/png.ico",
+      "certificateFile": "cert.pfx",
+      "certificatePassword": "password"
     },
     "nsis": {
       "oneClick": false,

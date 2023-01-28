@@ -6,6 +6,20 @@ const Store = require('electron-store');
 
 let mainWindow;
 
+autoUpdater.on('checking-for-update', () => {
+})
+
+autoUpdater.on('update-available', (info) => {
+
+})
+autoUpdater.on('update-not-available', (info) => {
+
+})
+autoUpdater.on('error', (err) => {
+   
+})
+
+
 const store = new Store();
 
 autoUpdater.checkForUpdates();
@@ -164,3 +178,7 @@ app.on('ready', () => {
 
   mainWindow.loadFile('build/index.html');
 });
+
+app.on('window-all-closed', () => {
+   app.quit();
+ });
