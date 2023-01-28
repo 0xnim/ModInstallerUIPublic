@@ -14,6 +14,7 @@ function App() {
   const [selectedMod, setSelectedMod] = React.useState(null);
   const [selectedVersion, setSelectedVersion] = React.useState(null);
   const [modType, setModType] = useState('mod');
+  const [search, setSearch] = useState('');
   
   React.useEffect(() => {
     fetch(`https://api.0xnim.xyz/api/mods`)
@@ -105,6 +106,22 @@ function App() {
     } 
   };
 
+  const handleSearch = (e) => {
+    const searchValue = e.target.value;
+    setSearch(searchValue);
+  
+    if (searchValue === '') {
+      fetch(`https://api.0xnim.xyz/api/mods`)
+        .then(response => response.json())
+        .then(data => setMods(data.data));
+    } else {
+      fetch(`https://api.0xnim.xyz/api/mods/search/name/${searchValue}`)
+        .then(response => response.json())
+        .then(data => setMods(data.data));
+    }
+  }
+
+
   return (
     <div>
       <nav>
@@ -117,6 +134,9 @@ function App() {
         {modType === 'mod' && <p />}
         {modType === 'pack' && <p />}
         {modType === 'texture' && <p />}
+      </div>
+      <div>
+        <input value={search} onChange={handleSearch} />
       </div>
       <table class="half">
         <thead>
