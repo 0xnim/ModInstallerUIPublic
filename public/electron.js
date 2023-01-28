@@ -2,27 +2,17 @@ const { app, BrowserWindow, Menu, ipcMain, dialog } = require('electron');
 const { download } = require('electron-dl');
 const { autoUpdater } = require('electron-updater');
 const Store = require('electron-store');
+const updater = require('./updater.js');
 
 
 let mainWindow;
 
-autoUpdater.on('checking-for-update', () => {
-})
+autoUpdater.checkForUpdates()
 
-autoUpdater.on('update-available', (info) => {
-
-})
-autoUpdater.on('update-not-available', (info) => {
-
-})
-autoUpdater.on('error', (err) => {
-   
-})
 
 
 const store = new Store();
 
-autoUpdater.checkForUpdates();
 
 
 ipcMain.handle('download-item', async (event, url, hash, type) => {
@@ -102,6 +92,10 @@ const template = [
             label: 'Browse Game Directory',
             click: _ => { selectFolder()
          }
+        },
+        {
+         label: 'Check Updates...',
+         click: updater.checkForUpdates
         },
         {
            label: 'Exit',

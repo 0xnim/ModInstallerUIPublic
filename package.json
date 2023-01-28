@@ -1,7 +1,7 @@
 {
   "name": "modinstalleruijs",
   "productName": "SFS ModInstaller",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "main": "public/electron.js",
   "homepage": ".",
   "scripts": {
@@ -73,9 +73,7 @@
     ],
     "win": {
       "target": "nsis",
-      "icon": "src/png.ico",
-      "certificateFile": "cert.pfx",
-      "certificatePassword": "password"
+      "icon": "src/png.ico"
     },
     "nsis": {
       "oneClick": false,
