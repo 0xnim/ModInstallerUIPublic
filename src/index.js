@@ -1,9 +1,12 @@
 import React, { useState } from 'react';
 import ReactDOM from 'react-dom';
 import axios from 'axios';
-const { ipcRenderer, remote } = require('electron-renderer');
+//const { ipcRenderer, remote } = require('electron-renderer');
 import './styles.css';
 import toast, { Toaster } from 'solid-toast';
+import Dialog from './components/Dialog';
+
+
 
 function App() {
   const baseURL = 'https://api.0xnim.xyz';
@@ -15,7 +18,16 @@ function App() {
   const [selectedVersion, setSelectedVersion] = React.useState(null);
   const [modType, setModType] = useState('mod');
   const [search, setSearch] = useState('');
+
+  const [showDialog, setShowDialog] = useState(false);
+  const [selectedSort, setSelectedSort] = useState('Id');
+
+
+  const handleSort = (sortType) => {
+    setSelectedSort(sortType);
+  }
   
+
   React.useEffect(() => {
     fetch(`https://api.0xnim.xyz/api/mods`)
       .then(response => response.json())
@@ -89,7 +101,6 @@ function App() {
     return output;
   }
   
-
   const handleApply = async () => {
     toast.success('Toast launched successfully!');
     const selectedMods = Object.keys(installCheckboxes).filter(id => installCheckboxes[id]);
@@ -135,9 +146,23 @@ function App() {
         {modType === 'pack' && <p />}
         {modType === 'texture' && <p />}
       </div>
-      <div>
+      <div class="search-container">
+        <label>Search:</label>
         <input value={search} onChange={handleSearch} />
       </div>
+
+      <div class="sort-container">
+        <label>Sort By: </label>
+        <button type="button" id="dialog-trigger" onClick={() => setShowDialog(true)}>
+          {selectedSort}
+        </button>
+      </div>
+
+      {showDialog && (
+        <Dialog handleSort={handleSort} />
+      )}
+
+
       <table class="half">
         <thead>
           <tr>
@@ -149,8 +174,14 @@ function App() {
         <tbody>
         {mods.map( mod => {
           if (mod.type === modType) {
+            let order;
+            if (selectedSort === 'Id') {
+              order = mod.id;
+            } else if (selectedSort === 'Downloads') {
+              order = mod.downloads;
+            }
             return (
-              <tr key={mod.id} onClick={() => handleRowClick(mod)}>
+              <tr key={order} onClick={() => handleRowClick(mod)}>
                 <td>
                   <input
                     type="checkbox"
@@ -185,4 +216,4 @@ function App() {
   );
 }
 
-ReactDOM.render(<App/>, document.getElementById('root'));
+ReactDOM.render(<App />, document.getElementById('root'));
