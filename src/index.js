@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import ReactDOM from 'react-dom';
 import axios from 'axios';
-//const { ipcRenderer, remote } = require('electron-renderer');
+const { ipcRenderer, remote } = require('electron-renderer');
 import './styles.css';
 import toast, { Toaster } from 'solid-toast';
 import Dialog from './components/Dialog';

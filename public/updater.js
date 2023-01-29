@@ -39,8 +39,7 @@ autoUpdater.on('update-not-available', () => {
     title: 'No Updates',
     message: 'Current version is up-to-date.'
   })
-  updater.enabled = true
-  updater = null
+
 })
 
 autoUpdater.on('update-downloaded', () => {
