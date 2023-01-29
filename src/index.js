@@ -21,18 +21,37 @@ function App() {
 
   const [showDialog, setShowDialog] = useState(false);
   const [selectedSort, setSelectedSort] = useState('Id');
+  let [data, setData] = useState([]);
 
-
-  const handleSort = (sortType) => {
-    setSelectedSort(sortType);
-  }
   
 
   React.useEffect(() => {
     fetch(`https://api.0xnim.xyz/api/mods`)
       .then(response => response.json())
-      .then(data => setMods(data.data));
+      .then(data => setMods(data.data))
+      .then(data => setData(data.data));
   }, []);
+
+  const sortData = async (field) => {
+    console.log(field)
+    const sortedData = [...data];
+    if (field === 'downloads') {
+      sortedData.sort((a, b) => (a[field] > b[field]) ? -1 : 1);
+    } else {
+      sortedData.sort((a, b) => (a.id > b.id) ? 1 : -1);
+    }
+    setData(sortedData);
+  }
+
+  
+
+
+  const handleSort = (sortType) => {
+    setSelectedSort(sortType);
+    const sortLowerCase = selectedSort.toLowerCase();
+    sortData(sortLowerCase);
+    setData
+  }
   
   const handleCheckboxChange = (e, modId) => {
     setInstallCheckboxes({ ...installCheckboxes, [modId]: e.target.checked });
@@ -151,37 +170,27 @@ function App() {
         <input value={search} onChange={handleSearch} />
       </div>
 
-      <div class="sort-container">
-        <label>Sort By: </label>
-        <button type="button" id="dialog-trigger" onClick={() => setShowDialog(true)}>
-          {selectedSort}
-        </button>
-      </div>
+
 
       {showDialog && (
         <Dialog handleSort={handleSort} />
       )}
 
-
       <table class="half">
         <thead>
           <tr>
-            <th>Install</th>
-            <th>Name</th>
-            <th>Author</th>
+            <th onClick={() => handleSort('id')}>Install</th>
+            <th onClick={() => handleSort('name')}>Name</th>
+            <th onClick={() => handleSort('author')} >Author</th>
+            <th onClick={() => handleSort('downloads')}>Downloads</th>
           </tr>
         </thead>
         <tbody>
-        {mods.map( mod => {
+        {mods.map((mod, index) => {
+          console.log()
           if (mod.type === modType) {
-            let order;
-            if (selectedSort === 'Id') {
-              order = mod.id;
-            } else if (selectedSort === 'Downloads') {
-              order = mod.downloads;
-            }
             return (
-              <tr key={order} onClick={() => handleRowClick(mod)}>
+              <tr key={index} onClick={() => handleRowClick(mod)}>
                 <td>
                   <input
                     type="checkbox"
@@ -192,6 +201,7 @@ function App() {
                 </td>
                 <td>{mod.name}</td>
                 <td>{mod.author}</td>
+                <td>{mod.downloads}</td>
               </tr>
             )
           }

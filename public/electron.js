@@ -15,6 +15,8 @@ const store = new Store();
 
 
 
+
+
 ipcMain.handle('download-item', async (event, url, hash, type) => {
    downloadUrl(url, hash, type);
 });
@@ -27,7 +29,15 @@ const downloadUrl = (url, hash, type) => {
     processQueue(type);
 }
 
-let folder = 'C://Program Files (x86)//Steam//steamapps//common';
+let folder = 'C://Program Files (x86)//Steam//steamapps//common//Spaceflight Simulator//Spaceflight Simulator Game';
+if (store.get('folder') != undefined) {
+   folder = store.get('folder');
+} 
+store.set('folder', folder);
+
+
+
+
 
 const selectFolder = () => {
    dialog.showOpenDialog(mainWindow, {
@@ -36,7 +46,9 @@ const selectFolder = () => {
       console.log(result.canceled)
       arrayPath = result.filePaths;
       if (arrayPath.toString().indexOf("steamapps") >= 0) {
+         store.delete('folder');
          folder = arrayPath.toString();
+         store.set('folder', folder);
          updateDownloadPaths();
       }
       else {
@@ -49,16 +61,16 @@ const selectFolder = () => {
 
 const updateDownloadPaths = () => {
    downloadPaths = {
-      "mod": folder.replace(/\//g, '\\') + '\\Spaceflight Simulator\\Spaceflight Simulator Game\\Mods',
-      "pack": folder.replace(/\//g, '\\') + '\\Spaceflight Simulator\\Spaceflight Simulator Game\\Mods\\Parts',
-      "texture": folder.replace(/\//g, '\\') + '\\Spaceflight Simulator\\Spaceflight Simulator Game\\Mods\\Textutre Packs'
+      "mod": folder.replace(/\//g, '\\') + '\\Mods',
+      "pack": folder.replace(/\//g, '\\') + '\\Mods\\Parts',
+      "texture": folder.replace(/\//g, '\\') + '\\Mods\\Textutre Packs'
    }
 }
 
 let downloadPaths = {
-   "mod": folder.replace(/\//g, '\\') + '\\Spaceflight Simulator\\Spaceflight Simulator Game\\Mods',
-   "pack": folder.replace(/\//g, '\\') + '\\Spaceflight Simulator\\Spaceflight Simulator Game\\Mods\\Custom Assets\\Parts',
-   "texture": folder.replace(/\//g, '\\') + '\\Spaceflight Simulator\\Spaceflight Simulator Game\\Mods\\Custom Assets\\Textutre Packs'
+   "mod": folder.replace(/\//g, '\\') + '\\Mods',
+   "pack": folder.replace(/\//g, '\\') + '\\Mods\\Custom Assets\\Parts',
+   "texture": folder.replace(/\//g, '\\') + '\\Mods\\Custom Assets\\Textutre Packs'
 }
 
 
