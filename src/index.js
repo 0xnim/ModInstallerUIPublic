@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import ReactDOM from 'react-dom';
 import axios from 'axios';
-const { ipcRenderer, remote } = require('electron-renderer');
+//const { ipcRenderer, remote } = require('electron-renderer');
 import './styles.css';
 import toast, { Toaster } from 'solid-toast';
 import Dialog from './components/Dialog';
@@ -214,7 +214,6 @@ function App() {
           <h2>{selectedMod.name}</h2>
           <p>{selectedMod.type === 'mod' ? 'Mod' : 'Pack'}</p>
           <p class="checkmark">{selectedMod.status === 1 ? 'Maintained: ' : 'Not Maintained: '}</p>
-          <p>{selectedMod.type === 'mod' ? 'Mod' : 'Pack'}</p>
           <p>Description: {selectedMod.description}</p>
           
         </div>
