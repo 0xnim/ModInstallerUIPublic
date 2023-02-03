@@ -3,7 +3,6 @@ import ReactDOM from 'react-dom';
 import axios from 'axios';
 //const { ipcRenderer, remote } = require('electron-renderer');
 import './styles.css';
-import toast, { Toaster } from 'solid-toast';
 import Dialog from './components/Dialog';
 
 
@@ -20,38 +19,27 @@ function App() {
   const [search, setSearch] = useState('');
 
   const [showDialog, setShowDialog] = useState(false);
-  const [selectedSort, setSelectedSort] = useState('Id');
-  let [data, setData] = useState([]);
 
-  
+  const [sortBy, setSortBy] = useState('id'); // default sort by id
+
 
   React.useEffect(() => {
     fetch(`https://api.0xnim.xyz/api/mods`)
       .then(response => response.json())
       .then(data => setMods(data.data))
-      .then(data => setData(data.data));
   }, []);
 
-  const sortData = async (field) => {
-    console.log(field)
-    const sortedData = [...data];
-    if (field === 'downloads') {
-      sortedData.sort((a, b) => (a[field] > b[field]) ? -1 : 1);
-    } else {
-      sortedData.sort((a, b) => (a.id > b.id) ? 1 : -1);
-    }
-    setData(sortedData);
-  }
 
-  
-
-
-  const handleSort = (sortType) => {
-    setSelectedSort(sortType);
-    const sortLowerCase = selectedSort.toLowerCase();
-    sortData(sortLowerCase);
-    setData
-  }
+  const sortData = (sortBy) => {
+    setMods([...mods].sort((a, b) => {
+      if (sortBy === 'id') {
+        return a[sortBy] > b[sortBy] ? 1 : -1;
+      } else {
+        return a[sortBy] > b[sortBy] ? -1 : 1;
+      }
+    }));
+    setSortBy(sortBy);
+  };
   
   const handleCheckboxChange = (e, modId) => {
     setInstallCheckboxes({ ...installCheckboxes, [modId]: e.target.checked });
@@ -121,7 +109,6 @@ function App() {
   }
   
   const handleApply = async () => {
-    toast.success('Toast launched successfully!');
     const selectedMods = Object.keys(installCheckboxes).filter(id => installCheckboxes[id]);
     const downloadPromises = [];
     for (const id of selectedMods) {
@@ -154,6 +141,7 @@ function App() {
 
   return (
     <div>
+
       <nav>
         <button value="mod" onClick={() => setModType("mod")}>Mods</button>
         <button value="pack" onClick={() => setModType("pack")}>Packs</button>
@@ -169,7 +157,11 @@ function App() {
         <label>Search:</label>
         <input value={search} onChange={handleSearch} />
       </div>
-
+      <div class="sort-container">
+        <button onClick={() => sortData(sortBy === 'id' ? 'downloads' : 'id')}>
+          Sort by {sortBy === 'id' ? 'Downloads' : 'ID'}
+        </button>
+      </div>
 
 
       {showDialog && (
@@ -179,10 +171,10 @@ function App() {
       <table class="half">
         <thead>
           <tr>
-            <th onClick={() => handleSort('id')}>Install</th>
-            <th onClick={() => handleSort('name')}>Name</th>
-            <th onClick={() => handleSort('author')} >Author</th>
-            <th onClick={() => handleSort('downloads')}>Downloads</th>
+            <th>Install</th>
+            <th>Name</th>
+            <th>Author</th>
+            <th>Downloads</th>
           </tr>
         </thead>
         <tbody>
