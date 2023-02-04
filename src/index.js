@@ -4,6 +4,7 @@ import axios from 'axios';
 //const { ipcRenderer, remote } = require('electron-renderer');
 import './styles.css';
 import Dialog from './components/Dialog';
+import Dropdown from './components/Dropdown';
 
 
 
@@ -158,9 +159,8 @@ function App() {
         <input value={search} onChange={handleSearch} />
       </div>
       <div class="sort-container">
-        <button onClick={() => sortData(sortBy === 'id' ? 'downloads' : 'id')}>
-          Sort by {sortBy === 'id' ? 'Downloads' : 'ID'}
-        </button>
+
+        <Dropdown sortData={sortData} sortBy={sortBy}/>
       </div>
 
 
